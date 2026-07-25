@@ -32,6 +32,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             version="${{ inputs.version }}"
           fi
+          dotnet --version
           dotnet build Jellyfin.Plugin.JelevisionExtras/Jellyfin.Plugin.JelevisionExtras.csproj --configuration Release --no-restore
           python3 scripts/package.py \
             --dll Jellyfin.Plugin.JelevisionExtras/bin/Release/net9.0/Jellyfin.Plugin.JelevisionExtras.dll \
