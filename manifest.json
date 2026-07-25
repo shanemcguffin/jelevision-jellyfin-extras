@@ -12,7 +12,7 @@
         "changelog": "Initial public release with privacy-preserving local catalog matching, TheDiscDb integration, technical-reel suppression, Preview/Apply/Undo tasks, provenance validation, and bundled offline fallback.",
         "targetAbi": "10.11.11.0",
         "sourceUrl": "https://github.com/shanemcguffin/jelevision-jellyfin-extras/releases/download/v0.3.0.0/Jelevision.Extras.Enricher_0.3.0.0.zip",
-        "checksum": "d3b5b54008d9a1e50906d3e11bc4e528",
+        "checksum": "bfa80894efc5f59a28dc0086ad84b0dd",
         "timestamp": "2026-07-25T23:34:03Z"
       }
     ]

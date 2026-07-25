@@ -5,6 +5,10 @@
     <RootNamespace>Jellyfin.Plugin.JelevisionExtras</RootNamespace>
     <AssemblyName>Jellyfin.Plugin.JelevisionExtras</AssemblyName>
     <Version>0.3.0.0</Version>
+    <Deterministic>true</Deterministic>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
+    <PathMap>$(MSBuildProjectDirectory)=/_/Jellyfin.Plugin.JelevisionExtras</PathMap>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
