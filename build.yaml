@@ -1,0 +1,18 @@
+---
+name: "Jelevision Extras Enricher"
+guid: "8b43a8c3-42ed-4fdf-8fb7-41d853b85ef4"
+version: "0.3.0.0"
+targetAbi: "10.11.11.0"
+framework: "net9.0"
+overview: "Identify anonymous local movie extras with an open community catalog"
+description: >
+  Enriches anonymous local extras from TheDiscDb and the open Jelevision
+  verified catalog; verified technical/legal reels are removed from Extras.
+category: "Metadata"
+owner: "Jelevision"
+artifacts:
+  - "Jellyfin.Plugin.JelevisionExtras.dll"
+changelog: >
+  Adds the open Jelevision community catalog, private local matching,
+  configurable self-hosted snapshots, provenance validation, and bundled
+  offline fallback.

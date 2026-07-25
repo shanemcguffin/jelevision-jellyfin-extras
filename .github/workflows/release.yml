@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+      - run: dotnet test Jellyfin.Plugin.JelevisionExtras.Tests/Jellyfin.Plugin.JelevisionExtras.Tests.csproj --configuration Release
+      - run: python3 scripts/validate_manifest.py manifest.json
+      - name: Build archive
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          dotnet build Jellyfin.Plugin.JelevisionExtras/Jellyfin.Plugin.JelevisionExtras.csproj --configuration Release --no-restore
+          python3 scripts/package.py \
+            --dll Jellyfin.Plugin.JelevisionExtras/bin/Release/net9.0/Jellyfin.Plugin.JelevisionExtras.dll \
+            --meta Jellyfin.Plugin.JelevisionExtras/manifest.json \
+            --output "artifacts/Jelevision.Extras.Enricher_${version}.zip"
+          expected="$(python3 -c 'import json,sys; version=sys.argv[1]; print(next(item["checksum"] for item in json.load(open("manifest.json"))[0]["versions"] if item["version"] == version))' "$version")"
+          actual="$(md5sum "artifacts/Jelevision.Extras.Enricher_${version}.zip" | cut -d " " -f 1)"
+          test "$actual" = "$expected"
+          sha256sum "artifacts/Jelevision.Extras.Enricher_${version}.zip"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/Jelevision.Extras.Enricher_*.zip
+          generate_release_notes: true
