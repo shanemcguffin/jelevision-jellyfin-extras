@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Plugin version to package
+        required: true
+        default: "0.3.0.0"
 
 permissions:
   contents: write
@@ -19,9 +25,13 @@ jobs:
       - run: dotnet test Jellyfin.Plugin.JelevisionExtras.Tests/Jellyfin.Plugin.JelevisionExtras.Tests.csproj --configuration Release
       - run: python3 scripts/validate_manifest.py manifest.json
       - name: Build archive
+        id: package
         shell: bash
         run: |
           version="${GITHUB_REF_NAME#v}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          fi
           dotnet build Jellyfin.Plugin.JelevisionExtras/Jellyfin.Plugin.JelevisionExtras.csproj --configuration Release --no-restore
           python3 scripts/package.py \
             --dll Jellyfin.Plugin.JelevisionExtras/bin/Release/net9.0/Jellyfin.Plugin.JelevisionExtras.dll \
@@ -29,9 +39,21 @@ jobs:
             --output "artifacts/Jelevision.Extras.Enricher_${version}.zip"
           expected="$(python3 -c 'import json,sys; version=sys.argv[1]; print(next(item["checksum"] for item in json.load(open("manifest.json"))[0]["versions"] if item["version"] == version))' "$version")"
           actual="$(md5sum "artifacts/Jelevision.Extras.Enricher_${version}.zip" | cut -d " " -f 1)"
-          test "$actual" = "$expected"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "expected=$expected" >> "$GITHUB_OUTPUT"
+          echo "actual=$actual" >> "$GITHUB_OUTPUT"
+          echo "Expected MD5: $expected"
+          echo "Actual MD5:   $actual"
+          sha256sum Jellyfin.Plugin.JelevisionExtras/bin/Release/net9.0/Jellyfin.Plugin.JelevisionExtras.dll
           sha256sum "artifacts/Jelevision.Extras.Enricher_${version}.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Jelevision.Extras.Enricher_${{ steps.package.outputs.version }}
+          path: artifacts/Jelevision.Extras.Enricher_*.zip
+      - name: Verify repository checksum
+        run: test "${{ steps.package.outputs.actual }}" = "${{ steps.package.outputs.expected }}"
       - uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push'
         with:
           files: artifacts/Jelevision.Extras.Enricher_*.zip
           generate_release_notes: true
