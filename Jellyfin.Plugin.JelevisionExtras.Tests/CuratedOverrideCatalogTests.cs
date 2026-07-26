@@ -119,7 +119,9 @@ public sealed class CuratedOverrideCatalogTests
             _catalog.Rules,
             rule =>
             {
-                if (rule.Action == CuratedOverrideAction.HideTechnical)
+                if (rule.Action is
+                    CuratedOverrideAction.HideTechnical
+                    or CuratedOverrideAction.HideDuplicate)
                 {
                     Assert.Null(rule.Title);
                     Assert.Null(rule.ExtraType);

@@ -185,6 +185,8 @@ public sealed partial class ExtrasEnrichmentService
 
                 var isTechnical =
                     assignment.Rule.Action == CuratedOverrideAction.HideTechnical;
+                var isDuplicate =
+                    assignment.Rule.Action == CuratedOverrideAction.HideDuplicate;
                 var appliedTitle = assignment.Rule.Title ?? assignment.Local.Name;
                 itemReports.Add(new ExtraMatchReport(
                     assignment.Local.Id,
@@ -204,6 +206,14 @@ public sealed partial class ExtrasEnrichmentService
                     if (changed)
                     {
                         report.TechnicalItemsChanged++;
+                    }
+                }
+                else if (isDuplicate)
+                {
+                    report.DuplicateItemsIdentified++;
+                    if (changed)
+                    {
+                        report.DuplicateItemsChanged++;
                     }
                 }
                 else
@@ -470,7 +480,9 @@ public sealed partial class ExtrasEnrichmentService
     {
         var appliedName = assignment.Rule.Title ?? video.Name;
         var appliedType =
-            assignment.Rule.Action == CuratedOverrideAction.HideTechnical
+            assignment.Rule.Action is
+                CuratedOverrideAction.HideTechnical
+                or CuratedOverrideAction.HideDuplicate
                 ? null
                 : assignment.Rule.ExtraType;
         var sourceId = string.Join('|', "v3", "catalog", assignment.Rule.RuleId);

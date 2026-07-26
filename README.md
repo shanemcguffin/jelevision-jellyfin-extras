@@ -11,7 +11,8 @@ an evidence-backed Jelevision catalog feed. A small
 [public seed and versioned format](catalog-format/README.md) remain open for
 interoperability; the larger production catalog is maintained separately.
 Verified copyright, hardware, and legal disclaimer reels can be removed from
-Jellyfin's Extras UI without deleting the underlying media.
+Jellyfin's Extras UI without deleting the underlying media. Verified
+byte-identical duplicate files can be suppressed the same way.
 
 ## Install from Jellyfin
 
@@ -41,6 +42,8 @@ The plugin updates only Jellyfin metadata:
 - named supplements receive their verified title and type;
 - confirmed technical/legal reels have `ExtraType` cleared so they no longer
   appear as entertainment extras; and
+- verified byte-identical duplicates have `ExtraType` cleared while
+  stream-layout differences remain visible for review; and
 - every applied change records its source and an undo snapshot.
 
 It never renames, moves, replaces, uploads, or deletes a media file.
@@ -104,7 +107,7 @@ dotnet build Jellyfin.Plugin.JelevisionExtras/Jellyfin.Plugin.JelevisionExtras.c
 python3 scripts/package.py \
   --dll Jellyfin.Plugin.JelevisionExtras/bin/Release/net9.0/Jellyfin.Plugin.JelevisionExtras.dll \
   --meta Jellyfin.Plugin.JelevisionExtras/manifest.json \
-  --output artifacts/Jelevision.Extras.Enricher_0.3.1.0.zip
+  --output artifacts/Jelevision.Extras.Enricher_0.3.2.0.zip
 ```
 
 ## Public/private boundary

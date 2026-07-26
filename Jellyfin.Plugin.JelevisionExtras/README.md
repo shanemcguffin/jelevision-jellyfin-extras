@@ -17,7 +17,11 @@ setting `ExtraType` to `null`. This leaves the media file untouched but removes
 it from Jellyfin's trailer and special-feature endpoints. Silent video is never
 hidden merely because it lacks an audio stream.
 
-Version 0.3.1 downloads the configured catalog with one HTTP `GET`, then
+Verified byte-identical duplicate files may use the same reversible
+declassification action. Files with different audio, commentary, subtitle, or
+branching layouts are not treated as exact duplicates.
+
+Version 0.3.2 downloads the configured catalog with one HTTP `GET`, then
 matches it entirely inside Jellyfin. Movie IDs, filenames, paths,
 fingerprints, and results are not sent to Jelevision. A validated public seed
 is bundled for offline operation.

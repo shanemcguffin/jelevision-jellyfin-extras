@@ -109,6 +109,45 @@ public sealed class CommunityCatalogClientTests
     }
 
     [Fact]
+    public async Task CompilesVerifiedExactDuplicateHideRules()
+    {
+        var duplicateCatalog = VerifiedCatalog
+            .Replace(
+                "\"action\":\"set_metadata\"",
+                "\"action\":\"hide_duplicate\"",
+                StringComparison.Ordinal)
+            .Replace(
+                "\"title\":\"Theatrical Trailer\"",
+                "\"title\":null",
+                StringComparison.Ordinal)
+            .Replace(
+                "\"type\":\"trailer\"",
+                "\"type\":\"duplicate\"",
+                StringComparison.Ordinal);
+        using var httpClient = new HttpClient(
+            new CatalogHandler(duplicateCatalog));
+        var client = CommunityCatalogClient.CreateForEndpoint(
+            httpClient,
+            NullLogger<CommunityCatalogClient>.Instance,
+            new Uri("https://catalog.example.test/v1/catalog"));
+
+        var snapshot = await client.GetVerifiedRulesAsync(
+            CancellationToken.None);
+
+        Assert.Equal(2, snapshot.Rules.Count);
+        Assert.All(
+            snapshot.Rules,
+            rule =>
+            {
+                Assert.Equal(
+                    CuratedOverrideAction.HideDuplicate,
+                    rule.Action);
+                Assert.Null(rule.Title);
+                Assert.Null(rule.ExtraType);
+            });
+    }
+
+    [Fact]
     public void DownloadedRulesOverrideEquivalentBundledSelectors()
     {
         var fallback = new CuratedOverrideCatalog();

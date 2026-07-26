@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>Jellyfin.Plugin.JelevisionExtras</RootNamespace>
     <AssemblyName>Jellyfin.Plugin.JelevisionExtras</AssemblyName>
-    <Version>0.3.1.0</Version>
+    <Version>0.3.2.0</Version>
     <Deterministic>true</Deterministic>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>

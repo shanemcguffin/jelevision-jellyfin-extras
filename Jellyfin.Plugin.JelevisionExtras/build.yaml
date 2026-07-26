@@ -1,7 +1,7 @@
 ---
 name: "Jelevision Extras Enricher"
 guid: "8b43a8c3-42ed-4fdf-8fb7-41d853b85ef4"
-version: "0.3.1.0"
+version: "0.3.2.0"
 targetAbi: "10.11.11.0"
 framework: "net9.0"
 overview: "Identify anonymous local movie extras with verified catalog feeds"
@@ -14,5 +14,5 @@ owner: "Jelevision"
 artifacts:
   - "Jellyfin.Plugin.JelevisionExtras.dll"
 changelog: >
-  Separates the public catalog format and seed from production feeds, adds
-  optional Bearer authentication, and keeps all matching local.
+  Adds conservative exact-duplicate suppression while preserving files with
+  alternate audio, commentary, subtitle, or branching layouts.

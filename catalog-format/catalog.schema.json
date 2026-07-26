@@ -184,7 +184,8 @@
         "action": {
           "enum": [
             "set_metadata",
-            "hide_technical"
+            "hide_technical",
+            "hide_duplicate"
           ]
         },
         "title": {
@@ -203,7 +204,8 @@
             "scene",
             "short",
             "other",
-            "technical"
+            "technical",
+            "duplicate"
           ]
         }
       }

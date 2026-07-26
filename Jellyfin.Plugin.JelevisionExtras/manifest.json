@@ -1,14 +1,14 @@
 {
   "category": "Metadata",
-  "changelog": "Separates the public catalog format and seed from production feeds, adds optional Bearer authentication, and keeps all matching local.",
-  "description": "Enriches anonymous local extras from TheDiscDb, a public Jelevision seed, and optional private feeds; verified technical/legal reels are removed from Extras.",
+  "changelog": "Adds conservative exact-duplicate suppression while preserving files with alternate audio, commentary, subtitle, or branching layouts.",
+  "description": "Enriches anonymous local extras from TheDiscDb and verified feeds; technical reels and exact duplicates can be removed from Extras without deleting media.",
   "guid": "8b43a8c3-42ed-4fdf-8fb7-41d853b85ef4",
   "name": "Jelevision Extras Enricher",
   "overview": "Identify anonymous local movie extras with verified catalog feeds",
   "owner": "Jelevision",
   "targetAbi": "10.11.11.0",
-  "timestamp": "2026-07-26T00:04:56.0000000Z",
-  "version": "0.3.1.0",
+  "timestamp": "2026-07-26T02:45:00.0000000Z",
+  "version": "0.3.2.0",
   "status": "Active",
   "autoUpdate": false,
   "assemblies": [

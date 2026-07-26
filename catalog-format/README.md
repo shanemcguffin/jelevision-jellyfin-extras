@@ -22,6 +22,16 @@ A version 1 record identifies its parent with a TMDb or IMDb id and requires:
 Clients must leave an item unchanged when these signals conflict or when
 equally strong records disagree.
 
+## Result actions
+
+- `set_metadata` applies a verified title and entertainment extra type.
+- `hide_technical` clears `ExtraType` for a verified legal, warning, or
+  compatibility reel.
+- `hide_duplicate` clears `ExtraType` only for a verified exact duplicate.
+
+Hide actions change Jellyfin metadata only. They never delete or rename the
+underlying file and remain reversible through the plugin's undo task.
+
 ## Feed configuration
 
 The public sample is the plugin default:

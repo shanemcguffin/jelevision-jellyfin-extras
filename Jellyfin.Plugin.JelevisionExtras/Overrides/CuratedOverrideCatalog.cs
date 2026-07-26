@@ -34,7 +34,12 @@ public enum CuratedOverrideAction
     /// <summary>
     /// Remove the extra classification from a verified technical/legal reel.
     /// </summary>
-    HideTechnical
+    HideTechnical,
+
+    /// <summary>
+    /// Remove the extra classification from a verified duplicate file.
+    /// </summary>
+    HideDuplicate
 }
 
 /// <summary>

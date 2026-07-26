@@ -129,6 +129,16 @@ public sealed class EnrichmentRunReport
     public int TechnicalItemsChanged { get; set; }
 
     /// <summary>
+    /// Gets or sets the number of verified exact duplicate titles identified.
+    /// </summary>
+    public int DuplicateItemsIdentified { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of exact duplicate titles hidden during an apply run.
+    /// </summary>
+    public int DuplicateItemsChanged { get; set; }
+
+    /// <summary>
     /// Gets or sets an error returned by the remote catalog, if it was unavailable.
     /// </summary>
     public string? CatalogError { get; set; }

@@ -331,10 +331,14 @@ public sealed class CommunityCatalogClient
             if (string.Equals(
                     result.Type,
                     "technical",
+                    StringComparison.Ordinal)
+                || string.Equals(
+                    result.Type,
+                    "duplicate",
                     StringComparison.Ordinal))
             {
                 throw new InvalidOperationException(
-                    $"{entryId}: technical records cannot set visible metadata.");
+                    $"{entryId}: hidden records cannot set visible metadata.");
             }
 
             return CuratedOverrideAction.SetMetadata;
@@ -351,6 +355,19 @@ public sealed class CommunityCatalogClient
             && result.Title is null)
         {
             return CuratedOverrideAction.HideTechnical;
+        }
+
+        if (string.Equals(
+                result.Action,
+                "hide_duplicate",
+                StringComparison.Ordinal)
+            && string.Equals(
+                result.Type,
+                "duplicate",
+                StringComparison.Ordinal)
+            && result.Title is null)
+        {
+            return CuratedOverrideAction.HideDuplicate;
         }
 
         throw new InvalidOperationException(
