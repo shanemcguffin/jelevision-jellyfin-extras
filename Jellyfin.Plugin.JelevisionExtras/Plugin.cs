@@ -32,7 +32,7 @@ public sealed class Plugin : BasePlugin<PluginConfiguration>
 
     /// <inheritdoc />
     public override string Description =>
-        "Identifies anonymous local extras using TheDiscDb and the open Jelevision verified catalog.";
+        "Identifies anonymous local extras using TheDiscDb, the public Jelevision seed, and optional private catalog feeds.";
 
     /// <inheritdoc />
     public override Guid Id => Guid.Parse("8b43a8c3-42ed-4fdf-8fb7-41d853b85ef4");
@@ -49,15 +49,22 @@ public sealed class Plugin : BasePlugin<PluginConfiguration>
 public sealed class PluginConfiguration : BasePluginConfiguration
 {
     /// <summary>
-    /// Gets or sets a value indicating whether the plugin downloads the open
-    /// verified catalog. Matching remains local and sends no library ids.
+    /// Gets or sets a value indicating whether the plugin downloads the
+    /// configured catalog. Matching remains local and sends no library ids.
     /// </summary>
     public bool EnableCommunityCatalog { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets the catalog JSON endpoint. A self-hosted snapshot may be
-    /// used instead of the public GitHub endpoint.
+    /// Gets or sets the catalog JSON endpoint. The default contains only the
+    /// public seed; a self-hosted or licensed feed may be used instead.
     /// </summary>
     public string CommunityCatalogUrl { get; set; } =
         CommunityCatalogClient.DefaultCatalogUrl;
+
+    /// <summary>
+    /// Gets or sets the optional Bearer token used for a private catalog feed.
+    /// The JELEVISION_EXTRAS_CATALOG_TOKEN environment variable takes
+    /// precedence when set.
+    /// </summary>
+    public string CommunityCatalogAccessToken { get; set; } = string.Empty;
 }

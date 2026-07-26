@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Jellyfin.Plugin.JelevisionExtras.Overrides;
@@ -19,15 +20,15 @@ public sealed record CommunityCatalogSnapshot(
     IReadOnlyList<CuratedOverrideRule> Rules);
 
 /// <summary>
-/// Downloads the open Jelevision catalog without sending library identifiers.
+/// Downloads a configured Jelevision catalog without sending library identifiers.
 /// </summary>
 public sealed class CommunityCatalogClient
 {
     /// <summary>
-    /// Gets the default immutable-path catalog endpoint.
+    /// Gets the default public-seed catalog endpoint.
     /// </summary>
     public const string DefaultCatalogUrl =
-        "https://raw.githubusercontent.com/shanemcguffin/jelevision-extras-catalog/main/catalog/v1/catalog.json";
+        "https://raw.githubusercontent.com/shanemcguffin/jelevision-jellyfin-extras/main/catalog-format/public-sample.json";
 
     private const int MaximumEntries = 250_000;
     private static readonly JsonSerializerOptions JsonOptions =
@@ -35,6 +36,7 @@ public sealed class CommunityCatalogClient
     private readonly HttpClient _httpClient;
     private readonly ILogger<CommunityCatalogClient> _logger;
     private readonly Uri? _endpointOverride;
+    private readonly string? _accessTokenOverride;
 
     /// <summary>
     /// Initializes a catalog client using plugin configuration.
@@ -44,18 +46,20 @@ public sealed class CommunityCatalogClient
     public CommunityCatalogClient(
         HttpClient httpClient,
         ILogger<CommunityCatalogClient> logger)
-        : this(httpClient, logger, null)
+        : this(httpClient, logger, null, null)
     {
     }
 
     private CommunityCatalogClient(
         HttpClient httpClient,
         ILogger<CommunityCatalogClient> logger,
-        Uri? endpointOverride)
+        Uri? endpointOverride,
+        string? accessTokenOverride)
     {
         _httpClient = httpClient;
         _logger = logger;
         _endpointOverride = endpointOverride;
+        _accessTokenOverride = accessTokenOverride;
     }
 
     /// <summary>
@@ -65,14 +69,20 @@ public sealed class CommunityCatalogClient
     /// <param name="httpClient">Configured HTTP client.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="endpoint">Absolute catalog snapshot endpoint.</param>
+    /// <param name="accessToken">Optional Bearer token.</param>
     /// <returns>A client pinned to <paramref name="endpoint"/>.</returns>
     public static CommunityCatalogClient CreateForEndpoint(
         HttpClient httpClient,
         ILogger<CommunityCatalogClient> logger,
-        Uri endpoint)
+        Uri endpoint,
+        string? accessToken = null)
     {
         ArgumentNullException.ThrowIfNull(endpoint);
-        return new CommunityCatalogClient(httpClient, logger, endpoint);
+        return new CommunityCatalogClient(
+            httpClient,
+            logger,
+            endpoint,
+            accessToken);
     }
 
     /// <summary>
@@ -84,8 +94,16 @@ public sealed class CommunityCatalogClient
         CancellationToken cancellationToken)
     {
         var endpoint = ResolveEndpoint();
+        using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+        var accessToken = ResolveAccessToken();
+        if (accessToken is not null)
+        {
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
         using var response = await _httpClient
-            .GetAsync(endpoint, cancellationToken)
+            .SendAsync(request, cancellationToken)
             .ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
@@ -246,6 +264,21 @@ public sealed class CommunityCatalogClient
         return endpoint;
     }
 
+    private string? ResolveAccessToken()
+    {
+        if (_endpointOverride is not null)
+        {
+            return NormalizeSecret(_accessTokenOverride);
+        }
+
+        var environmentToken = Environment.GetEnvironmentVariable(
+            "JELEVISION_EXTRAS_CATALOG_TOKEN");
+        var configuredToken = !string.IsNullOrWhiteSpace(environmentToken)
+            ? environmentToken
+            : Plugin.Instance?.Configuration.CommunityCatalogAccessToken;
+        return NormalizeSecret(configuredToken);
+    }
+
     private static IReadOnlyList<(ParentIdKind Kind, string Id)> GetProviderIds(
         string entryId,
         CommunityCatalogMediaIds ids)
@@ -351,7 +384,7 @@ public sealed class CommunityCatalogClient
             .ToList();
         values.Insert(
             0,
-            "https://github.com/shanemcguffin/jelevision-extras-catalog");
+            "https://github.com/shanemcguffin/jelevision-jellyfin-extras/tree/main/catalog-format");
         return string.Join("; ", values);
     }
 
@@ -373,5 +406,10 @@ public sealed class CommunityCatalogClient
         }
 
         return value;
+    }
+
+    private static string? NormalizeSecret(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 }

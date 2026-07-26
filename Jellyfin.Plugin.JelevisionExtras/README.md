@@ -2,8 +2,9 @@
 
 A Jellyfin 10.11 plugin that identifies anonymously named local movie extras
 using physical-disc title metadata from [TheDiscDb](https://thediscdb.com) and
-the open [Jelevision Extras Catalog](https://github.com/shanemcguffin/jelevision-extras-catalog)
-for discs missing from that catalog.
+the Jelevision catalog format for discs missing from that catalog. The
+interoperable format and a small public sample live in this repository; the
+production catalog is maintained separately.
 
 The plugin never downloads or replaces media. It updates Jellyfin's item name
 and `ExtraType` only when the complete set of eligible local extras uniquely
@@ -16,10 +17,10 @@ setting `ExtraType` to `null`. This leaves the media file untouched but removes
 it from Jellyfin's trailer and special-feature endpoints. Silent video is never
 hidden merely because it lacks an audio stream.
 
-Version 0.3 downloads the compact public catalog with a normal HTTP `GET`, then
-matches it entirely inside Jellyfin. Movie IDs, filenames, paths, fingerprints,
-and results are not sent to Jelevision. A validated bundled snapshot is used
-when the network or public catalog is unavailable.
+Version 0.3.1 downloads the configured catalog with one HTTP `GET`, then
+matches it entirely inside Jellyfin. Movie IDs, filenames, paths,
+fingerprints, and results are not sent to Jelevision. A validated public seed
+is bundled for offline operation.
 
 The initial verified catalog includes coverage for the inspected editions of:
 
@@ -44,13 +45,15 @@ Reports and undo state are stored in Jellyfin's plugin configuration directory.
 The default snapshot URL is:
 
 ```text
-https://raw.githubusercontent.com/shanemcguffin/jelevision-extras-catalog/main/catalog/v1/catalog.json
+https://raw.githubusercontent.com/shanemcguffin/jelevision-jellyfin-extras/main/catalog-format/public-sample.json
 ```
 
 Set `CommunityCatalogUrl` in the Jellyfin plugin configuration XML to use a
-self-hosted snapshot, or set the container environment variable
-`JELEVISION_EXTRAS_CATALOG_URL`. Set `EnableCommunityCatalog` to `false` for
-bundled-snapshot-only operation.
+self-hosted or licensed snapshot. Set `CommunityCatalogAccessToken` when it
+requires an HTTP Bearer token. The equivalent container environment variables
+are `JELEVISION_EXTRAS_CATALOG_URL` and
+`JELEVISION_EXTRAS_CATALOG_TOKEN`. Set `EnableCommunityCatalog` to `false` for
+bundled-seed-only operation.
 
 ## Data sources
 
@@ -59,7 +62,8 @@ TheDiscDb's source dataset is MIT-licensed:
 endpoint. An outage does not block curated rules; unmatched or ambiguous remote
 metadata is reported and skipped without changing Jellyfin.
 
-Verified catalog records and their provenance are public and versioned:
-<https://github.com/shanemcguffin/jelevision-extras-catalog>. The bundled rules
-in `Overrides/CuratedOverrideCatalog.cs` provide an offline safety net. Exact
-rules are deliberately edition-specific rather than fuzzy title guesses.
+The public format and sample are versioned under `catalog-format`. Production
+records may come from a separately licensed feed. The bundled rules in
+`Overrides/CuratedOverrideCatalog.cs` are the fixed public seed and provide an
+offline safety net. Exact rules are deliberately edition-specific rather than
+fuzzy title guesses.

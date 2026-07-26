@@ -3,10 +3,18 @@
     "category": "Metadata",
     "guid": "8b43a8c3-42ed-4fdf-8fb7-41d853b85ef4",
     "name": "Jelevision Extras Enricher",
-    "description": "Identifies anonymous local movie extras with TheDiscDb and the open Jelevision verified catalog; correctly classifies trailers and removes confirmed technical/legal reels from Extras without deleting media.",
+    "description": "Identifies anonymous local movie extras with TheDiscDb, a public Jelevision seed, and optional private catalog feeds; correctly classifies trailers and removes confirmed technical/legal reels without deleting media.",
     "owner": "Jelevision",
     "overview": "Name and classify local trailers and bonus features",
     "versions": [
+      {
+        "version": "0.3.1.0",
+        "changelog": "Introduces the hybrid catalog model: public format and seed, optional authenticated production feeds, local-only matching, and unchanged offline fallback behavior.",
+        "targetAbi": "10.11.11.0",
+        "sourceUrl": "https://github.com/shanemcguffin/jelevision-jellyfin-extras/releases/download/v0.3.1.0/Jelevision.Extras.Enricher_0.3.1.0.zip",
+        "checksum": "e996b558aa908e2bf92f5057644cb2db",
+        "timestamp": "2026-07-26T00:04:56Z"
+      },
       {
         "version": "0.3.0.0",
         "changelog": "Initial public release with privacy-preserving local catalog matching, TheDiscDb integration, technical-reel suppression, Preview/Apply/Undo tasks, provenance validation, and bundled offline fallback.",

@@ -18,8 +18,11 @@ MIT-licensed.
 - <https://github.com/TheDiscDb/data>
 - <https://github.com/TheDiscDb/data/blob/main/LICENSE>
 
-## Jelevision Extras Catalog
+## Jelevision public catalog seed
 
-The independently maintained verified mapping catalog is MIT-licensed.
+The schema and sample under `catalog-format` are MIT-licensed. The fixed
+fallback mappings already distributed in this plugin remain available under
+this repository's GPL-3.0 license and their documented source licenses.
 
-- <https://github.com/shanemcguffin/jelevision-extras-catalog>
+The separately maintained production catalog is not distributed as part of
+this repository.

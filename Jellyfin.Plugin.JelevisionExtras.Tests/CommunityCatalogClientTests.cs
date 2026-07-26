@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using Jellyfin.Plugin.JelevisionExtras.Overrides;
 using Jellyfin.Plugin.JelevisionExtras.Services;
@@ -36,6 +37,54 @@ public sealed class CommunityCatalogClientTests
         Assert.Equal(endpoint, handler.RequestUri);
         Assert.Equal(HttpMethod.Get, handler.Method);
         Assert.Null(handler.RequestBody);
+        Assert.Null(handler.Authorization);
+    }
+
+    [Fact]
+    public async Task SendsConfiguredBearerTokenWithoutSendingMatchData()
+    {
+        var handler = new CatalogHandler(VerifiedCatalog);
+        using var httpClient = new HttpClient(handler);
+        var endpoint = new Uri("https://catalog.example.test/v1/catalog");
+        var client = CommunityCatalogClient.CreateForEndpoint(
+            httpClient,
+            NullLogger<CommunityCatalogClient>.Instance,
+            endpoint,
+            "private-feed-token");
+
+        await client.GetVerifiedRulesAsync(CancellationToken.None);
+
+        Assert.Equal(
+            new AuthenticationHeaderValue("Bearer", "private-feed-token"),
+            handler.Authorization);
+        Assert.Equal(HttpMethod.Get, handler.Method);
+        Assert.Null(handler.RequestBody);
+    }
+
+    [Fact]
+    public async Task CheckedInPublicSampleCompilesAsAValidFeed()
+    {
+        var samplePath = Path.Combine(
+            AppContext.BaseDirectory,
+            "catalog-format",
+            "public-sample.json");
+        var sample = await File.ReadAllTextAsync(samplePath);
+        using var httpClient = new HttpClient(new CatalogHandler(sample));
+        var client = CommunityCatalogClient.CreateForEndpoint(
+            httpClient,
+            NullLogger<CommunityCatalogClient>.Instance,
+            new Uri(CommunityCatalogClient.DefaultCatalogUrl));
+
+        var snapshot = await client.GetVerifiedRulesAsync(CancellationToken.None);
+
+        Assert.Equal("2026.07.25.public.1", snapshot.Version);
+        Assert.Equal(1, snapshot.EntryCount);
+        Assert.Equal(2, snapshot.Rules.Count);
+        Assert.Contains(
+            snapshot.Rules,
+            rule =>
+                rule.Title == "Theatrical Trailer"
+                && rule.ExtraType == ExtraType.Trailer);
     }
 
     [Fact]
@@ -128,12 +177,15 @@ public sealed class CommunityCatalogClientTests
 
         public string? RequestBody { get; private set; }
 
+        public AuthenticationHeaderValue? Authorization { get; private set; }
+
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
             RequestUri = request.RequestUri;
             Method = request.Method;
+            Authorization = request.Headers.Authorization;
             RequestBody = request.Content is null
                 ? null
                 : await request.Content
