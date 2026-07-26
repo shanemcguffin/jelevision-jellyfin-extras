@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/shanemcguffin/jelevision-jellyfin-extras/main/catalog-format/catalog.schema.json",
+  "title": "Jelevision Extras Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "catalogVersion",
+    "generatedAt",
+    "license",
+    "sources",
+    "items"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "catalogVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1
+    },
+    "upstream": {
+      "type": "object"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "media",
+        "match",
+        "result",
+        "verification"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "media": {
+          "$ref": "#/$defs/media"
+        },
+        "release": {
+          "type": "object"
+        },
+        "match": {
+          "$ref": "#/$defs/match"
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "verification": {
+          "$ref": "#/$defs/verification"
+        }
+      }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ids"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "movie",
+            "series"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 1888,
+          "maximum": 2200
+        },
+        "ids": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "tmdb": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "imdb": {
+              "type": "string",
+              "pattern": "^tt[0-9]+$"
+            }
+          }
+        }
+      }
+    },
+    "match": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "titleOrdinal",
+        "durationSeconds",
+        "toleranceSeconds"
+      ],
+      "properties": {
+        "ordinalScope": {
+          "const": "local_filename"
+        },
+        "titleOrdinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "durationSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "toleranceSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 5
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "title",
+        "type"
+      ],
+      "properties": {
+        "action": {
+          "enum": [
+            "set_metadata",
+            "hide_technical"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "enum": [
+            "trailer",
+            "featurette",
+            "deleted_scene",
+            "behind_the_scenes",
+            "interview",
+            "scene",
+            "short",
+            "other",
+            "technical"
+          ]
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "sourceIds",
+        "evidence"
+      ],
+      "properties": {
+        "status": {
+          "const": "verified"
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "sourceIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

@@ -7,8 +7,9 @@ A Jellyfin 10.11 plugin that turns anonymous physical-media files such as
 other bonus features.
 
 It combines full-disc metadata from [TheDiscDb](https://thediscdb.com/) with
-the open, evidence-backed
-[Jelevision Extras Catalog](https://github.com/shanemcguffin/jelevision-extras-catalog).
+an evidence-backed Jelevision catalog feed. A small
+[public seed and versioned format](catalog-format/README.md) remain open for
+interoperability; the larger production catalog is maintained separately.
 Verified copyright, hardware, and legal disclaimer reels can be removed from
 Jellyfin's Extras UI without deleting the underlying media.
 
@@ -46,16 +47,22 @@ It never renames, moves, replaces, uploads, or deletes a media file.
 
 ## Privacy
 
-The public Jelevision catalog is downloaded with a normal HTTP `GET`, then all
-matching runs inside Jellyfin. Movie IDs, filenames, paths, media, fingerprints,
-and match results are not sent to Jelevision.
+The configured Jelevision catalog is downloaded with a single HTTP `GET`, then
+all matching runs inside Jellyfin. Movie IDs, filenames, paths, media,
+fingerprints, and match results are not sent to Jelevision.
 
-The plugin can operate from its bundled snapshot when offline. To use a local
-or self-hosted catalog, set:
+The plugin can operate from its previously released public seed when offline.
+The default remote feed is the one-record public format sample. To use a local,
+self-hosted, or licensed feed, set:
 
 ```text
 JELEVISION_EXTRAS_CATALOG_URL=http://catalog:8787/v1/catalog
+JELEVISION_EXTRAS_CATALOG_TOKEN=replace-with-feed-token
 ```
+
+The token is optional and is sent only as an HTTP Bearer token to that URL.
+Equivalent `CommunityCatalogUrl` and `CommunityCatalogAccessToken` properties
+may be set in the Jellyfin plugin configuration XML.
 
 Contribution to the public dataset is a separate, explicit opt-in process.
 
@@ -97,12 +104,14 @@ dotnet build Jellyfin.Plugin.JelevisionExtras/Jellyfin.Plugin.JelevisionExtras.c
 python3 scripts/package.py \
   --dll Jellyfin.Plugin.JelevisionExtras/bin/Release/net9.0/Jellyfin.Plugin.JelevisionExtras.dll \
   --meta Jellyfin.Plugin.JelevisionExtras/manifest.json \
-  --output artifacts/Jelevision.Extras.Enricher_0.3.0.0.zip
+  --output artifacts/Jelevision.Extras.Enricher_0.3.1.0.zip
 ```
 
-## Licensing
+## Public/private boundary
 
 The plugin source and distributed binary are licensed under
 [GPL-3.0](LICENSE), matching Jellyfin's plugin-linking requirements. The
-separate catalog is MIT-licensed. See
+schema and sample under [`catalog-format`](catalog-format/README.md) are
+MIT-licensed. The production catalog is not included in this repository, and
+no production-feed license is granted by installing the plugin. See
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

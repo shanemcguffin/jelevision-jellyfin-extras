@@ -1,0 +1,57 @@
+{
+  "$schema": "./catalog.schema.json",
+  "schemaVersion": 1,
+  "catalogVersion": "2026.07.25.public.1",
+  "generatedAt": "2026-07-25T23:07:01Z",
+  "license": "MIT",
+  "upstream": {
+    "name": "TheDiscDb",
+    "repository": "https://github.com/TheDiscDb/data",
+    "mirror": "https://github.com/shanemcguffin/the-discdb-data",
+    "snapshotCommit": "6b15e37f660627f66b4186eb2b6b44c73180c9cf"
+  },
+  "sources": [
+    {
+      "id": "local-inspection-2026-07-25",
+      "label": "Frame, audio, stream, and exact-runtime inspection of the observed disc extra"
+    }
+  ],
+  "items": [
+    {
+      "id": "dumb-and-dumber-1994-t05-trailer",
+      "media": {
+        "kind": "movie",
+        "title": "Dumb and Dumber",
+        "year": 1994,
+        "ids": {
+          "tmdb": "8467",
+          "imdb": "tt0109686"
+        }
+      },
+      "release": {
+        "editionHint": "Unrated Blu-ray extraction"
+      },
+      "match": {
+        "ordinalScope": "local_filename",
+        "titleOrdinal": 5,
+        "durationSeconds": 129.152,
+        "toleranceSeconds": 1.25
+      },
+      "result": {
+        "action": "set_metadata",
+        "title": "Theatrical Trailer",
+        "type": "trailer"
+      },
+      "verification": {
+        "status": "verified",
+        "verifiedAt": "2026-07-25",
+        "sourceIds": [
+          "local-inspection-2026-07-25"
+        ],
+        "evidence": [
+          "Trailer structure, title cards, and program content were visually verified"
+        ]
+      }
+    }
+  ]
+}

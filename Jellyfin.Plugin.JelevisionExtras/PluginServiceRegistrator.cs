@@ -22,7 +22,7 @@ public sealed class PluginServiceRegistrator : IPluginServiceRegistrator
             client.BaseAddress = new Uri("https://thediscdb.com/");
             client.Timeout = TimeSpan.FromSeconds(45);
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                "Jelevision-Extras-Enricher/0.3 (+https://github.com/TheDiscDb/data)");
+                "Jelevision-Extras-Enricher/0.3.1 (+https://github.com/TheDiscDb/data)");
         });
 
         serviceCollection.AddHttpClient<CommunityCatalogClient>(client =>
@@ -30,7 +30,7 @@ public sealed class PluginServiceRegistrator : IPluginServiceRegistrator
             client.Timeout = TimeSpan.FromSeconds(20);
             client.MaxResponseContentBufferSize = 4 * 1024 * 1024;
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                "Jelevision-Extras-Enricher/0.3 (+https://github.com/shanemcguffin/jelevision-extras-catalog)");
+                "Jelevision-Extras-Enricher/0.3.1 (+https://github.com/shanemcguffin/jelevision-jellyfin-extras)");
         });
 
         serviceCollection.AddSingleton<ExtraMetadataMatcher>();

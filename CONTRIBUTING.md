@@ -3,10 +3,10 @@
 Bug fixes, server compatibility improvements, new tests, and privacy-preserving
 catalog integration changes are welcome.
 
-For a new title or extra mapping, contribute to the
-[Jelevision Extras Catalog](https://github.com/shanemcguffin/jelevision-extras-catalog)
-instead of hard-coding it in this plugin. The bundled rules exist only as an
-offline fallback.
+Catalog-format improvements and corrections to the previously released public
+seed are welcome. New production-catalog records are maintained separately and
+must not be added to this repository unless Jelevision has explicitly selected
+them for the public seed.
 
 Before opening a pull request:
 
@@ -19,4 +19,6 @@ python3 scripts/validate_manifest.py manifest.json
 Do not include media, screenshots, local paths, server identifiers, API keys,
 tokens, or personal information in tests or issues.
 
-By contributing, you agree to license your contribution under GPL-3.0.
+By contributing plugin code, you agree to license it under GPL-3.0. Changes
+made specifically to `catalog-format` are contributed under the MIT license in
+that directory.

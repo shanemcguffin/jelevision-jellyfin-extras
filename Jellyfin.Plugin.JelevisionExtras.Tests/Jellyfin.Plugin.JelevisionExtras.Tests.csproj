@@ -23,4 +23,10 @@
     <ProjectReference Include="../Jellyfin.Plugin.JelevisionExtras/Jellyfin.Plugin.JelevisionExtras.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../catalog-format/public-sample.json"
+          Link="catalog-format/public-sample.json"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
